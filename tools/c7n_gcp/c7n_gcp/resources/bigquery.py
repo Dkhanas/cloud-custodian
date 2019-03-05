@@ -49,3 +49,33 @@ class DataSet(QueryResourceManager):
                 client.execute_query(
                     'get', verb_arguments=ref))
         return results
+
+
+@resources.register('bq-jobs')
+class Jobs(QueryResourceManager):
+
+    class resource_type(TypeInfo):
+        service = 'bigquery'
+        version = 'v2'
+        component = 'jobs'
+        enum_spec = ('list', 'jobs[]', None)
+        scope = 'project'
+        scope_key = 'projectId'
+
+        @staticmethod
+        def get(client, resource_info):
+            return client.execute_query('get', {
+                'projectId': resource_info['project_id'],
+                'jobId': 'projects/{project_id}/jobs/{job_id}'.format(
+                    **resource_info)})
+
+
+@resources.register('bq-projects')
+class Projects(QueryResourceManager):
+
+    class resource_type(TypeInfo):
+        service = 'bigquery'
+        version = 'v2'
+        component = 'projects'
+        enum_spec = ('list', 'projects[]', None)
+        scope = 'global'

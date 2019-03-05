@@ -30,3 +30,26 @@ class BigQueryDataSetTest(BaseTest):
             'devxyz')
         self.assertTrue('access' in dataset)
         self.assertEqual(dataset['labels'], {'env': 'dev'})
+
+
+class BigQueryJobsTest(BaseTest):
+
+    def test_query(self):
+        factory = self.replay_flight_data('bigquery-jobs-query')
+        p = self.load_policy({
+            'name': 'bq-jobs-get',
+            'resource': 'gcp.bq-jobs'},
+            session_factory=factory)
+        resourses = p.run()
+        self.assertEqual(len(resourses), 0)
+
+class BigQueryProjectsTest(BaseTest):
+
+    def test_query(self):
+        factory = self.replay_flight_data('bigquery-projects-query')
+        p = self.load_policy({
+            'name': 'bq-get',
+            'resource': 'gcp.bq-projects'},
+            session_factory=factory)
+        resourses = p.run()
+        self.assertEqual(len(resourses), 1)
